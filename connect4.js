@@ -15,18 +15,20 @@ let board = []; // array of rows, each row is array of cells  (board[y][x])
  *    board = array of rows, each row is array of cells  (board[y][x])
  */
 
-// TODO: set "board" to empty HEIGHT x WIDTH matrix array
+// set "board" to empty HEIGHT x WIDTH matrix array
 
 function makeBoard() {
-
-  for (let i = 0;  i < HEIGHT; i++){
-    let eachRow = [];
-    for (let j = 0; j < WIDTH; j++){
-      eachRow.push(null);
-    }
-    board.push(eachRow);
+  // for (let i = 0;  i < HEIGHT; i++){
+  //   let eachRow = [];
+  //   for (let j = 0; j < WIDTH; j++){
+  //     eachRow.push(null);
+  //   }
+  //   board.push(eachRow);
+  // }
+  for(let i = 0; i < HEIGHT; i++){
+    board.push(new Array(WIDTH).fill(null));
   }
-}
+}   // compact it even more!! TODO
 
 /** makeHtmlBoard: make HTML table and row of column tops. */
 
@@ -47,7 +49,7 @@ function makeHtmlBoard() {
   }
   htmlBoard.append(top);
 
-  // Creates a table of  HEIGHT rows and  WIDTH colums; appends the table to the website;
+  // Creates a table of  HEIGHT rows and  WIDTH colums; appends the table to the website
 
   for (let y = 0; y < HEIGHT; y++) {
 
@@ -68,8 +70,13 @@ function makeHtmlBoard() {
 /** findSpotForCol: given column x, return top empty y (null if filled) */
 
 function findSpotForCol(x) {
-  // TODO: write the real version of this, rather than always returning 0
-  return 0;
+  for (y = HEIGHT-1; y >= 0 ; y--){
+    if (board [y][x] === null){
+      return y;
+    }
+  }
+  // return null if column full
+  return null;
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
@@ -87,7 +94,8 @@ function placeInTable(y, x) {
 /** endGame: announce game end */
 
 function endGame(msg) {
-  // TODO: pop up alert message
+  //  pop up alert message
+  alert(`OH SNAP WINNER WINNER CHICKEN DINNER! Player ${currPlayer} won! `);
 }
 
 /** handleClick: handle click of column top to play piece */
@@ -103,7 +111,8 @@ function handleClick(evt) {
   }
 
   // place piece in board and add to HTML table
-  // TODO: add line to update in-memory board
+  //  add line to update in-memory board
+  board[y][x] = currPlayer;
   placeInTable(y, x);
 
   // check for win
@@ -112,11 +121,21 @@ function handleClick(evt) {
   }
 
   // check for tie
-  // TODO: check if all cells in board are filled; if so call, call endGame
+  // Check if all cells in board are filled; if so call, call endGame
+  if (board.every( 
+    row => row.every(
+      cell => cell!==null
+      )
+    )
+  ){
+    endGame('Tie Game!');
+  }
 
   // switch players
-  // TODO: switch currPlayer 1 <-> 2
-  currPlayer = 3 - currPlayer;
+  // Switch currPlayer 1 <-> 2
+  // currPlayer = 3 - currPlayer;  // play with ternary;
+  // TODO
+  currPlayer = currPlayer === 1 ? 2 : 1;
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -137,8 +156,10 @@ function checkForWin() {
     );
   }
 
-  // TODO: read and understand this code. Add comments to help you.
-
+  //  TODO
+  // Check for 4 in a row win in
+  // horizontal, vertical, diagonal (DOWN RIGHT), diagonal (DOWN LEFT).
+  // Returns true if any win conditions hold.
   for (let y = 0; y < HEIGHT; y++) {
     for (let x = 0; x < WIDTH; x++) {
       let horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
